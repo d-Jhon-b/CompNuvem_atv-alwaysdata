@@ -16,7 +16,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:3000';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://compnuvem-atv-alwaysdata.onrender.com';
 
   const carregarProdutos = async () => {
     try {
