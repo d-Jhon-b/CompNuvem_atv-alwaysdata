@@ -5,10 +5,19 @@ import { db } from './db/index.js';
 import { produtos } from './db/schema.js';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://compnuvem.vercel.app/',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+
+app.get('/', (req, res) => {
+  res.json({ msg: "Atividade de computação em nuvem" });
+});
 
 app.get('/api/produtos', async (req, res) => {
   try {
