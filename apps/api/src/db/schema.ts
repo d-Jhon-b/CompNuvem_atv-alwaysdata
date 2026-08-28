@@ -1,7 +1,7 @@
-import { mysqlTable, serial, varchar, timestamp } from 'drizzle-orm/mysql-core';
+import { mysqlTable, int, varchar, timestamp } from 'drizzle-orm/mysql-core';
 
 export const produtos = mysqlTable('produtos', {
-  id: serial('id').primaryKey(),
+  id: int('id').primaryKey().autoincrement(),
   nome: varchar('nome', { length: 255 }).notNull(),
   descricao: varchar('descricao', { length: 255 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),

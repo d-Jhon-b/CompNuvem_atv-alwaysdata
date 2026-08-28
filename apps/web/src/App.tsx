@@ -1,122 +1,110 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import type {FormEvent} from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+interface Produto {
+  id: number;
+  nome: string;
+  descricao: string;
+  createdAt: string;
 }
 
-export default App
+export function App() {
+  const [produtos, setProdutos] = useState<Produto[]>([]);
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState('');
+
+  const API_URL = 'http://localhost:3000/api/produtos';
+
+  const carregarProdutos = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Erro ao buscar produtos');
+      const data = await response.json();
+      setProdutos(data);
+    } catch (err: any) {
+      setErro(err.message || 'Falha na conexão com a API');
+    }
+  };
+
+  useEffect(() => {
+    carregarProdutos();
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!nome || !descricao) return;
+
+    setLoading(true);
+    setErro('');
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, descricao }),
+      });
+
+      if (!response.ok) throw new Error('Erro ao salvar produto');
+
+      setNome('');
+      setDescricao('');
+      await carregarProdutos();
+    } catch (err: any) {
+      setErro(err.message || 'Erro ao realizar o insert');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: '600px', margin: '40px auto', fontFamily: 'sans-serif', padding: '0 20px' }}>
+      <h2>Atividade Computação em Nuvem (AlwaysData)</h2>
+
+      {erro && <div style={{ color: 'red', marginBottom: '15px' }}>{erro}</div>}
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '30px' }}>
+        <h3>Inserir Novo Registro</h3>
+        <input
+          type="text"
+          placeholder="Nome do produto"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required
+          style={{ padding: '8px' }}
+        />
+        <input
+          type="text"
+          placeholder="Descrição"
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          required
+          style={{ padding: '8px' }}
+        />
+        <button type="submit" disabled={loading} style={{ padding: '10px', cursor: 'pointer' }}>
+          {loading ? 'Cadastrando...' : 'Cadastrar (INSERT)'}
+        </button>
+      </form>
+
+      <hr />
+
+      <h3>Registros Cadastrados no Banco (SELECT)</h3>
+      {produtos.length === 0 ? (
+        <p>Nenhum registro encontrado.</p>
+      ) : (
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {produtos.map((p) => (
+            <li key={p.id} style={{ borderBottom: '1px solid #ccc', padding: '10px 0' }}>
+              <strong>#{p.id} - {p.nome}</strong>
+              <p style={{ margin: '5px 0 0 0', color: '#555' }}>{p.descricao}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default App;
