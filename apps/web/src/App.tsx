@@ -20,7 +20,7 @@ export function App() {
 
   const carregarProdutos = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(`${API_URL}/api/produtos`);
       if (!response.ok) throw new Error('Erro ao buscar produtos');
       const data = await response.json();
       setProdutos(data);
@@ -41,7 +41,7 @@ export function App() {
     setErro('');
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(`${API_URL}/api/produtos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, descricao }),
