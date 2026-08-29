@@ -7,11 +7,30 @@ import { produtos } from './db/schema.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+const allowedOrigins = [
+  'https://compnuvem.vercel.app',
+  'https://d-jhon-b.github.io'
+];
+
+
 app.use(cors({
-  origin: ['https://d-jhon-b.github.io/CompNuvem_atv-alwaysdata', '*','https://vercel.com/wwluiza09-4131s-projects/compnuvem/GCQh8X9m213fRiaJEkttxPPxFF53'],
+  origin: (origin, callback)=>{if(!origin) return callback(null, true)
+    if (allowedOrigins.indexOf(origin)!== -1){
+      return callback(null, true)
+    }else{return callback(new Error('Bloqueado pela politica de CORS'))}
+
+
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials:true
 }));
+
+
+app.options('*', cors());
+
+
 app.use(express.json());
 
 
