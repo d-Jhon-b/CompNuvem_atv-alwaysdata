@@ -33,7 +33,7 @@ jobs:
         
       - name: Build Web App
         env:
-          VITE_API_URL: https://sua-api.onrender.com/api/produtos
+          VITE_API_URL: https://compnuvem-atv-alwaysdata.onrender.com
         run: pnpm --filter web build
         
       - name: Setup Pages
