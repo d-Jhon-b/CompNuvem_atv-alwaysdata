@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: ' * ',
+  origin: ['https://d-jhon-b.github.io/CompNuvem_atv-alwaysdata', ' * '],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
