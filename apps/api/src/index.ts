@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   'https://compnuvem.vercel.app',
   'https://d-jhon-b.github.io/CompNuvem_atv-alwaysdata',
+  'https://d-jhon-b.github.io/CompNuvem_atv-alwaysdata/',
   'https://d-jhon-b.github.io'
 ];
 
